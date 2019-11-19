@@ -1,0 +1,10 @@
+.popup{
+    z-index: 9999;
+    background-color: white;
+    color: black;
+    padding: 30px;
+}
+.heading{
+    display: flex;
+    justify-content: space-between;
+}

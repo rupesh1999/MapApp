@@ -1,0 +1,17 @@
+.dropper {
+    height: 100vh;
+    width: 100%;
+}
+
+.dropper:hover{
+    cursor: pointer;
+    color: rgb(100, 100, 100);
+}
+
+.inputLine{
+    position: relative;
+    top: 40vh;
+    font-size: 25px;
+    font-family: 'Open Sans';
+    font-style: italic;
+}
