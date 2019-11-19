@@ -15,9 +15,9 @@ class Map extends Component {
             viewport: {
                 width: "100%",
                 height: "100%",
-                latitude: 37.803273851858656,
+                latitude: 37.756273851858656,
                 longitude: -122.46923446655273,
-                zoom: 10,
+                zoom: 10.4,
                 pitch: 0,
                 bearing: 0,
                 transitionDuration: 2000,
