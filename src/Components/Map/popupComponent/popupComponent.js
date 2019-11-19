@@ -8,6 +8,7 @@ export default function PopupComponent(props) {
     const btnClickHandeler = () => {
         console.log(props.info.index);
         props.showPanel()
+        props.removePopup();
     }
     const DelBtnClickHandeler = () => {
         props.deleteItem(props.info.index);
@@ -16,7 +17,7 @@ export default function PopupComponent(props) {
         <div className={styles.popup}>
             <div className={styles.heading}>
             <p>Type of Data: {props.info.object.geometry.type}</p>
-            <Icon color='violet' name='close' onClick = {props.closePopup()}/>
+            <Icon className={styles.icon } color='violet' name='close' onClick = {() => props.closePopup()}/>
             </div>
             {props.info.object.geometry.type === "Polygon" || props.info.object.geometry.type === "MultiPolygon"?
             <div>

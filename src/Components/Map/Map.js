@@ -17,13 +17,16 @@ class Map extends Component {
                 height: "100%",
                 latitude: 37.803273851858656,
                 longitude: -122.46923446655273,
-                zoom: 11,
+                zoom: 10,
                 pitch: 0,
                 bearing: 0,
                 transitionDuration: 2000,
             },
             selectedFeatureIndexes: [],
-            // hoveredObject: null,
+            // showPopup: false,
+            // selectedObj: {
+            //     coordinates: [0, 0]
+            // }
         };
     }
 
@@ -87,7 +90,7 @@ class Map extends Component {
                     return d.properties["stroke-width"];
                 }
             },
-            getFillOpacity: d=> {
+            getFillOpacity: d => {
                 if (d.properties["fill-opacity"] === undefined) {
                     return;
                 } else {
@@ -96,8 +99,11 @@ class Map extends Component {
             },
             getElevation: 30,
             onClick: info => {
-                console.log(info);
+                // console.log("this is the info");
+                // this.setState({ selectedObj: info });
+                // console.log(this.state.selectedObj);
                 this.props.setSelectedObject(info);
+                this.setState({ showPopup: true });
             }
         });
 
@@ -121,13 +127,29 @@ class Map extends Component {
             <>
                 <DeckGL
                     initialViewState={this.state.viewport}
+                    viewport={this.state.viewport}
                     controller={true}
                     layers={[layer]}
                 >
                     <ReactMapGL
                         mapboxApiAccessToken="pk.eyJ1IjoicnVwZXNoMTk5OSIsImEiOiJjazMwODhhaDgwb3RsM2NvbTI4a2Y2eDRjIn0.6NHGiVhdD_fk5XQwH2rYIA"
-                        mapStyle="mapbox://styles/rupesh1999/ck309110p04u71cqidmvd62qw"
+                        mapStyle="mapbox://styles/rupesh1999/ck35rnbta1zlt1cp7k1m2ies3"
                     >
+                        {/* {this.state.showPopup === true ?
+                            <Popup
+                                onClick={() => console.log("popup clicked")}
+                                viewport={this.state.viewport}
+                                latitude={this.state.selectedObj.coordinate[1]}
+                                longitude={this.state.selectedObj.coordinate[0]}
+                                closeButton={true}
+                                closeOnClick={true}
+                                onClose={() => this.setState({ showPopup: false })}
+                                captureDrag={false}
+                                captureScroll={false}
+                                captureDoubleClick={false}
+                                anchor="top" >
+                                <div>You are here</div>
+                            </Popup> : null} */}
 
                         {/* {this.props.GeoJSON.features.length === 0 ? null : this.props.GeoJSON.features.map((place, id) => (
                             place.geometry.type === "Point" ?
@@ -135,6 +157,8 @@ class Map extends Component {
                                     <Icon color='violet' name='map marker alternate' />
                                 </Marker> : null
                         ))} */}
+                        
+
                     </ReactMapGL>
                 </DeckGL>
             </>

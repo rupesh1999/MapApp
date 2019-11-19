@@ -2,3 +2,45 @@
     height: 100%;
     /* background-color: aquamarine; */
 }
+
+.heading {
+    text-align: center;
+    font-size: 25px;
+    font-family: 'Open Sans';
+    font-style: italic;
+}
+
+.btn {
+    width: 350px;
+    height: 50px;
+    background-color: rgb(32, 32, 32) !important;
+    color: rgb(231, 231, 231) !important;
+    transition: 1.35s ease-in;
+}
+
+.btn:hover {
+    width: 350px;
+    height: 45px;
+    background-color: rgb(231, 231, 231)!important;
+    color: rgb(32, 32, 32) !important;
+    transform: scale(1.01);
+    border: 1px solid rgb(32, 32, 32);
+}
+
+.btnGroup{
+    position: fixed;
+    bottom: 10px;
+}
+.btnBottom{
+    position: relative;
+    bottom: 10px;
+}
+
+.inputContainer > input{
+    width: 350px !important;
+}
+
+.current{
+    font-size: 13px !important;
+    color: rgb(146, 146, 146) !important;
+}

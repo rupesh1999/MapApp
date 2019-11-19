@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from "./PropertyPanel.module.css";
 import { Input, Button } from 'semantic-ui-react'
+import { Z_FIXED } from 'zlib';
 
 export default function PropertyPanel(props) {
     const [newValues, setNewValues] = useState({});
@@ -82,11 +83,17 @@ export default function PropertyPanel(props) {
     }
     const editJSX = () => {
         if (props.data === null) {
-            return <h3>element deleted</h3>
+            return (
+                <>
+                    <h3 className={styles.heading}>Element Deleted. Please Go back</h3>
+                    <Button style={{position: "fixed" , bottom: "10px"}} className={styles.btn + " " + styles.btnBottom} onClick={() => props.closePanel()}>Go Back</Button>
+                </>
+            );
         } else {
             return (
                 <>
-                    <h3>Edit the annotation's properties</h3>
+                    <h3 className={styles.heading}>Edit the {props.data.object.geometry.type}'s properties</h3>
+                    <hr />
                     <br />
                     {/* {props.data.object.properties["marker-color"] !== undefined ?
                         <div style={{ display: "flex" }}>
@@ -125,38 +132,48 @@ export default function PropertyPanel(props) {
                             <p>Current Value is {props.data.object.properties["fill-opacity"]}</p>
                         </div> : null} */}
                     {props.data.object.geometry.type === "Point" || props.data.object.geometry.type === "MultiPoint" ?
-                        <div>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Input name="stroke" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke value" />
-                                <p>Current Value is {props.data.object.properties["stroke"]}</p></div>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Input name="strokeWidth" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke Width" />
-                                <p>Current Value is {props.data.object.properties["stroke-width"]}</p></div>
+                        <div className="inputContainer">
+                            <div style={{ marginTop: "15px" }}>
+                                <label>Enter the Line Color.(In hex code)</label>
+                                <Input style={{ width: "350px" }} name="stroke" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke value" />
+                                <p className={styles.current}>Current Value is {props.data.object.properties["stroke"] === undefined ? <span>Empty</span> : props.data.object.properties["stroke"]}</p></div>
+                            <div style={{ marginTop: "15px" }}>
+                                <label>Enter the Line width.(In Integer)</label>
+                                <Input style={{ width: "350px" }} name="strokeWidth" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke Width" />
+                                <p className={styles.current}>Current Value is {props.data.object.properties["stroke-width"] === undefined ? <span>Empty</span> : props.data.object.properties["stroke-width"]}</p></div>
                         </div> : null}
                     {props.data.object.geometry.type === "LineString" || props.data.object.geometry.type === "MultiLineString" ?
-                        <div>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Input name="stroke" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke value" />
-                                <p>Current Value is {props.data.object.properties["stroke"]}</p></div>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Input name="strokeWidth" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke Width" />
-                                <p>Current Value is {props.data.object.properties["stroke-width"]}</p>
+                        <div className="inputContainer">
+                            <div style={{ marginTop: "15px" }}>
+                                <label>Enter the Line Color.(In hex code)</label>
+                                <Input style={{ width: "350px" }} name="stroke" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke value" />
+                                <p className={styles.current}>Current Value is {props.data.object.properties["stroke"]}</p></div>
+                            <div style={{ marginTop: "15px" }}>
+                                <label>Enter the Line width.(In Integer)</label>
+                                <Input style={{ width: "350px" }} name="strokeWidth" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke Width" />
+                                <p className={styles.current}>Current Value is {props.data.object.properties["stroke-width"]}</p>
                             </div>
                         </div> : null}
                     {props.data.object.geometry.type === "Polygon" || props.data.object.geometry.type === "MultiPolygon" ?
-                        <div>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Input onChange={onChangeHandeler} name="fill" type="text" placeholder="Enter fill" />
-                                <p>Current Value is {props.data.object.properties["fill"]}</p></div>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Input name="stroke" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke Value(hex code only)" />
-                                <p>Current Value is {props.data.object.properties["stroke"]}</p></div>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Input name="strokeWidth" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke Width" />
-                                <p>Current Value is {props.data.object.properties["stroke-width"]}</p></div>
+                        <div className="inputContainer">
+                            <div style={{ marginTop: "15px" }}>
+                                <label>Enter the inner color of {props.data.object.geometry.type}</label>
+                                <Input style={{ width: "350px" }} onChange={onChangeHandeler} name="fill" type="text" placeholder="Enter fill" />
+                                <p className={styles.current}>Current Value is {props.data.object.properties["fill"]}</p></div>
+                            <div style={{ marginTop: "15px" }}>
+                                <label>Enter the Line Color.(In hex code)</label>
+                                <Input style={{ width: "350px" }} name="stroke" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke Value(hex code only)" />
+                                <p className={styles.current}>Current Value is {props.data.object.properties["stroke"]}</p></div>
+                            <div style={{ marginTop: "15px" }}>
+                                <label>Enter the Line width.(In Integer)</label>
+                                <Input style={{ width: "350px" }} name="strokeWidth" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke Width" />
+                                <p className={styles.current}>Current Value is {props.data.object.properties["stroke-width"]}</p></div>
 
                         </div> : null}
-                    <Button onClick={btnClickHandeler} >Submit</Button>
+                    <div className={styles.btnGroup}>
+                        <Button className={styles.btn} onClick={btnClickHandeler} >Submit</Button>
+                        <Button className={styles.btn + " " + styles.btnBottom} onClick={() => props.closePanel()}>Go Back</Button>
+                    </div>
                 </>
             );
         }
