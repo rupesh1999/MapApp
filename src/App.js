@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Grid, Divider, Segment } from 'semantic-ui-react';
+import { Grid} from 'semantic-ui-react';
 import FileDroper from "./Components/FileDroper/FileDroper";
 import 'semantic-ui-css/semantic.min.css';
 import Map from "./Components/Map/Map";
 import PopupComponent from "./Components/Map/popupComponent/popupComponent";
 import PropertyPanel from "./Components/PropertyPanel/PropertyPanel";
 import Header from "./Components/UiComponents/Header/Header";
-import Footer from "./Components/UiComponents/Footer/Footer";
+
 function App() {
 	const [geoData, setGeoData] = useState({
 		type: "FeatureCollection",
 		features: []
 	});
 	const [showPanel, setShowPanel] = useState(false);
+
+	const [showPanelMaster, setShowPanelMaster] = useState(true);
 
 	const [selectedObj, setSelectedObj] = useState(null);
 
@@ -38,7 +40,7 @@ function App() {
 		if (selectedObj !== null) {
 			// console.log(selectedObj.coordinate[1]);
 		}
-		return selectedObj && (
+		return selectedObj && showPanelMaster && (
 			<div style={{ position: 'absolute', zIndex: 999, left: selectedObj.x, top: selectedObj.y }}>
 				<PopupComponent
 					deleteItem={(id) => deleteFeature(id)}
@@ -47,7 +49,7 @@ function App() {
 						setSelectedObj(null);
 						setShowPanel(false);
 					}}
-					removePopup = {() => {}}
+					// removePopup= { () => { setShowPanelMaster(false) }}
 					showPanel={() => { setShowPanel(true); }}
 				/>
 			</div>
@@ -64,7 +66,21 @@ function App() {
 
 	}
 
-	console.log(geoData);
+	const changePopupPos = (x, y) => {
+		if (selectedObj !== null) {
+			console.log(selectedObj);
+			const changeX = selectedObj.x - x;
+			const changeY = selectedObj.y - y;
+			const newObj = {
+				...selectedObj,
+				x: changeX,
+				y: changeY
+			}
+			setSelectedObj(newObj);
+			console.log(selectedObj);
+		}
+	}
+	// console.log(geoData);
 	return (
 		<>
 			<div>
@@ -74,18 +90,20 @@ function App() {
 						<Map
 							setData={(data) => setData(data)}
 							setSelectedObject={(data) => setSelectedObj(data)}
-							GeoJSON={geoData} />
+							GeoJSON={geoData}
+							changePopupPos={(x, y) => changePopupPos(x, y)}
+							hidePopup = {() => setShowPanelMaster(false)}
+							showPopup = {() => setShowPanelMaster(true)}
+						/>
 						{_renderTooltip()}
 					</Grid.Column>
 					<Grid.Column style={{ backgroundColor: "#f5f5f5" }} width={5}>
 						{showPanel === false ?
 							<FileDroper getData={(data) => getData(data)} /> :
-							<PropertyPanel closePanel={() => setShowPanel(false)} data={selectedObj} setProperties={(data) => SetProperty(data)} />}
+							<PropertyPanel removeSelectedObj={() => setSelectedObj(null)} closePanel={() => setShowPanel(false)} data={selectedObj} setProperties={(data) => SetProperty(data)} />}
 					</Grid.Column>
 				</Grid>
 			</div>
-
-			{/* <Footer /> */}
 		</>
 	);
 }

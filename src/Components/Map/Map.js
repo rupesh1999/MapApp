@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import DeckGL from '@deck.gl/react';
 import { GeoJsonLayer } from '@deck.gl/layers';
-import { EditableGeoJsonLayer, SelectionLayer } from '@nebula.gl/layers';
-import { DrawPolygonMode } from "@nebula.gl/edit-modes";
-import ReactMapGL, { Marker, Popup } from 'react-map-gl';
+// import { EditableGeoJsonLayer, SelectionLayer } from '@nebula.gl/layers';
+// import { DrawPolygonMode } from "@nebula.gl/edit-modes";
+import ReactMapGL, { FlyToInterpolator } from 'react-map-gl';
+import bbox from "@turf/bbox";
 // const selectedFeatureIndexes = [];
 
 
@@ -15,14 +16,23 @@ class Map extends Component {
             viewport: {
                 width: "100%",
                 height: "100%",
-                latitude: 37.756273851858656,
-                longitude: -122.46923446655273,
+                latitude: 37.75682426026292,
+                longitude: -122.45399951934814,
                 zoom: 10.4,
                 pitch: 0,
                 bearing: 0,
-                transitionDuration: 2000,
+
             },
             selectedFeatureIndexes: [],
+            dragStartCoord: {
+                x: null,
+                y: null
+            },
+            dragEndCoord: {
+                x: null,
+                y: null
+            },
+            // forceUpdate: true,
             // showPopup: false,
             // selectedObj: {
             //     coordinates: [0, 0]
@@ -52,9 +62,47 @@ class Map extends Component {
         let result = [r, g, b];
         return result;
     }
+    dragStart = (info) => {
+        this.setState({ dragStartCoord: { x: info.x, y: info.y } });
+        this.props.hidePopup();
+    }
+
+    dragEnd = (info) => {
+        this.setState({ dragEndCoord: { x: info.x, y: info.y } });
+        let diff_x = this.state.dragStartCoord.x - this.state.dragEndCoord.x;
+        let diff_y = this.state.dragStartCoord.y - this.state.dragEndCoord.y;
+        console.log(diff_x, diff_y);
+        this.setState({ dragStartCoord: { x: null, y: null } });
+        this.setState({ dragEndCoord: { x: null, y: null } });
+        this.props.changePopupPos(diff_x, diff_y);
+        this.props.showPopup();
+    }
+
+    checkViewport = () => {
+        let boundingBox = bbox(this.props.GeoJSON);
+        let lat = (boundingBox[1] + boundingBox[3]) / 2;
+        let lon = (boundingBox[0] + boundingBox[2]) / 2;
+        if (this.props.GeoJSON.features.length !== 0 && this.state.viewport.latitude !== lat && this.state.viewport.longitude !== lon) {
+            this.setState({
+                viewport: {
+                    ...this.state.viewport,
+                    latitude: lat,
+                    longitude: lon
+                }
+            });
+        }
+        console.log(this.state.viewport);
+    }
+
+    componentDidUpdate = () => {
+        if (this.props.GeoJSON.features.length !== 0) {
+            this.checkViewport()
+        }
+    }
 
 
     render() {
+
         const layer = new GeoJsonLayer({
             id: 'geojson-layer',
             data: this.props.GeoJSON,
@@ -63,11 +111,16 @@ class Map extends Component {
             filled: true,
             extruded: false,
             autoHighlight: true,
+            // highlightedObjectIndex: 5,
             lineWidthScale: 20,
             lineWidthMinPixels: 2,
             mask: true,
+            shouldUpdate: (changeFlags) =>  {
+                console.log("changes");
+                return changeFlags.viewportChanged; // default is now changeFlags.propsOrDataChanged;
+            },
             getFillColor: d => {
-                console.log(d.properties.fill);
+                // console.log(d.properties.fill);
                 if (d.properties.fill === undefined) {
                     return;
                 } else {
@@ -104,7 +157,10 @@ class Map extends Component {
                 // console.log(this.state.selectedObj);
                 this.props.setSelectedObject(info);
                 this.setState({ showPopup: true });
-            }
+                this.props.showPopup();
+            },
+            
+            
         });
 
         // const selectLayer = new SelectionLayer({
@@ -125,15 +181,19 @@ class Map extends Component {
 
         return (
             <>
+
                 <DeckGL
-                    initialViewState={this.state.viewport}
-                    viewport={this.state.viewport}
+                    initialViewState = {this.state.viewport}
                     controller={true}
                     layers={[layer]}
+                    onDragStart={(info) => this.dragStart(info)}
+                    onDragEnd={(info) => this.dragEnd(info)}
                 >
                     <ReactMapGL
                         mapboxApiAccessToken="pk.eyJ1IjoicnVwZXNoMTk5OSIsImEiOiJjazMwODhhaDgwb3RsM2NvbTI4a2Y2eDRjIn0.6NHGiVhdD_fk5XQwH2rYIA"
                         mapStyle="mapbox://styles/rupesh1999/ck35rnbta1zlt1cp7k1m2ies3"
+                    // onInteractionStateChange = {(interactionState) => console.log(interactionState)}
+                    // onViewportChange = {(viewState, interactionState, oldViewState) => console.log(viewState)}
                     >
                         {/* {this.state.showPopup === true ?
                             <Popup
@@ -157,7 +217,7 @@ class Map extends Component {
                                     <Icon color='violet' name='map marker alternate' />
                                 </Marker> : null
                         ))} */}
-                        
+
 
                     </ReactMapGL>
                 </DeckGL>

@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import styles from "./PropertyPanel.module.css";
 import { Input, Button } from 'semantic-ui-react'
-import { Z_FIXED } from 'zlib';
 
 export default function PropertyPanel(props) {
     const [newValues, setNewValues] = useState({});
     const btnClickHandeler = () => {
+        //deleting null values from the state
         for (var propName in newValues) {
             if (newValues[propName] === null || newValues[propName] === undefined || newValues[propName] === "") {
                 delete newValues[propName];
             }
         }
-        // console.log(newValues);
         props.setProperties(newValues);
         setNewValues({});
     }
@@ -86,7 +85,10 @@ export default function PropertyPanel(props) {
             return (
                 <>
                     <h3 className={styles.heading}>Element Deleted. Please Go back</h3>
-                    <Button style={{position: "fixed" , bottom: "10px"}} className={styles.btn + " " + styles.btnBottom} onClick={() => props.closePanel()}>Go Back</Button>
+                    <Button style={{ position: "fixed", bottom: "10px" }} className={styles.btn + " " + styles.btnBottom} onClick={() => {
+                        props.closePanel();
+                        props.removeSelectedObj();
+                    }}>Go Back</Button>
                 </>
             );
         } else {
@@ -95,42 +97,6 @@ export default function PropertyPanel(props) {
                     <h3 className={styles.heading}>Edit the {props.data.object.geometry.type}'s properties</h3>
                     <hr />
                     <br />
-                    {/* {props.data.object.properties["marker-color"] !== undefined ?
-                        <div style={{ display: "flex" }}>
-                            <Input name="markerColor" onChange={onChangeHandeler} type="text" placeholder="Enter Marker Color" />
-                            <p>Current Value is {props.data.object.properties["marker-color"]}</p>
-                        </div> : null}
-                    {props.data.object.properties["marker-size"] !== undefined ?
-                        <div style={{ display: "flex" }}>
-                            <Input name="markerSize" onChange={onChangeHandeler} type="text" placeholder="Enter Marker Size" />
-                            <p>Current Value is {props.data.object.properties["marker-size"]}</p>
-                        </div> : null}
-                    {props.data.object.properties["stroke"] !== undefined ?
-                        <div style={{ display: "flex" , justifyContent: "space-between" }}>
-                            <Input name="stroke" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke value" />
-                            <p>Current Value is {props.data.object.properties["stroke"]}</p>
-                        </div> : null}
-
-                    {props.data.object.properties["stroke-width"] !== undefined ?
-                        <div style={{ display: "flex" , justifyContent: "space-between"}}>
-                            <Input name="strokeWidth" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke Width" />
-                            <p>Current Value is {props.data.object.properties["stroke-width"]}</p>
-                        </div> : null}
-                    {props.data.object.properties["stroke-opacity"] !== undefined ?
-                        <div style={{ display: "flex" , justifyContent: "space-between"}}>
-                            <Input name="strokeOpacity" onChange={onChangeHandeler} type="text" placeholder="Enter Stroke Opacity" />
-                            <p>Current Value is {props.data.object.properties["stroke-opacity"]}</p>
-                        </div> : null}
-                    {props.data.object.properties["fill"] !== undefined ?
-                        <div style={{ display: "flex" , justifyContent: "space-between"}}>
-                            <Input onChange={onChangeHandeler} name="fill" type="text" placeholder="Enter fill" />
-                            <p>Current Value is {props.data.object.properties["fill"]}</p>
-                        </div> : null}
-                    {props.data.object.properties["fill-opacity"] !== undefined ?
-                        <div style={{ display: "flex" , justifyContent: "space-between"}}>
-                            <Input onChange={onChangeHandeler} name="fillOpacity" type="text" placeholder="Enter fill-opacity" />
-                            <p>Current Value is {props.data.object.properties["fill-opacity"]}</p>
-                        </div> : null} */}
                     {props.data.object.geometry.type === "Point" || props.data.object.geometry.type === "MultiPoint" ?
                         <div className="inputContainer">
                             <div style={{ marginTop: "15px" }}>
@@ -172,7 +138,10 @@ export default function PropertyPanel(props) {
                         </div> : null}
                     <div className={styles.btnGroup}>
                         <Button className={styles.btn} onClick={btnClickHandeler} >Submit</Button>
-                        <Button className={styles.btn + " " + styles.btnBottom} onClick={() => props.closePanel()}>Go Back</Button>
+                        <Button className={styles.btn + " " + styles.btnBottom} onClick={() => {
+                            props.closePanel();
+                            props.removeSelectedObj();
+                        }}>Go Back</Button>
                     </div>
                 </>
             );

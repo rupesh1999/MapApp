@@ -3,7 +3,7 @@ import {useDropzone} from 'react-dropzone'
 import classes from "./FileDropper.module.css";
 
 const FileDroper = (props) => {
-  const [geoJSON, setJeoJSON] = useState({features: [{geometry: {type: "point"}}]});
+  // const [geoJSON, setJeoJSON] = useState({features: [{geometry: {type: "point"}}]});
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.forEach((file) => {
       const reader = new FileReader()
@@ -14,7 +14,7 @@ const FileDroper = (props) => {
 
         const binaryStr = reader.result;
         let data = JSON.parse(binaryStr)
-        setJeoJSON(data);
+        // setJeoJSON(data);
         props.getData(data);
         // console.log(data);
       }
