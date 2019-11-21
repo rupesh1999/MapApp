@@ -186,7 +186,7 @@ class Map extends Component {
                     initialViewState={this.state.viewport}
                     controller={true}
                     onViewStateChange={({ viewState, interactionState, oldViewState }) => {
-                        console.log(interactionState.isZooming);
+                        // console.log(interactionState.isZooming);
                         if(interactionState.isZooming){
                             this.props.hidePopup();
                         }
