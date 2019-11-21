@@ -115,7 +115,7 @@ class Map extends Component {
             lineWidthScale: 20,
             lineWidthMinPixels: 2,
             mask: true,
-            shouldUpdate: (changeFlags) =>  {
+            shouldUpdate: (changeFlags) => {
                 console.log("changes");
                 return changeFlags.viewportChanged; // default is now changeFlags.propsOrDataChanged;
             },
@@ -159,8 +159,8 @@ class Map extends Component {
                 this.setState({ showPopup: true });
                 this.props.showPopup();
             },
-            
-            
+
+
         });
 
         // const selectLayer = new SelectionLayer({
@@ -183,11 +183,18 @@ class Map extends Component {
             <>
 
                 <DeckGL
-                    initialViewState = {this.state.viewport}
+                    initialViewState={this.state.viewport}
                     controller={true}
+                    onViewStateChange={({ viewState, interactionState, oldViewState }) => {
+                        console.log(interactionState.isZooming);
+                        if(interactionState.isZooming){
+                            this.props.hidePopup();
+                        }
+                    }}
                     layers={[layer]}
                     onDragStart={(info) => this.dragStart(info)}
                     onDragEnd={(info) => this.dragEnd(info)}
+                    onZoom={() => console.log("zoomed")}
                 >
                     <ReactMapGL
                         mapboxApiAccessToken="pk.eyJ1IjoicnVwZXNoMTk5OSIsImEiOiJjazMwODhhaDgwb3RsM2NvbTI4a2Y2eDRjIn0.6NHGiVhdD_fk5XQwH2rYIA"
