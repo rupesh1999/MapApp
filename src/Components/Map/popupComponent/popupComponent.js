@@ -27,8 +27,11 @@ export default React.memo(function PopupComponent(props) {
                 <div>
                     <p>Length of the {props.info.object.geometry.type} is {(length(props.info.object)).toFixed(2)} Miles</p>
                 </div> : null}
-            <Button onClick={btnClickHandeler} href="#"> Edit</Button>
-            <Button onClick={DelBtnClickHandeler} href="#"> Delete</Button>
+            <div style={{display: "flex" , justifyContent: "space-between"}}>
+                <Button onClick={btnClickHandeler} href="#"> Edit</Button>
+                <Button onClick={DelBtnClickHandeler} href="#"> Delete</Button>
+            </div>
+
         </div>
     )
 })
